@@ -3,28 +3,26 @@ package com.objectivus.firstproject;
 import com.livescribe.penlet.Penlet;
 import com.livescribe.display.Display;
 import com.livescribe.ui.ScrollLabel;
-//import com.livescribe.ui.MediaPlayer;
-import com.livescribe.event.PenTipListener;
+import com.livescribe.ui.MediaPlayer;
 import com.livescribe.event.StrokeListener;
 import com.livescribe.penlet.Region;
 import com.livescribe.event.HWRListener;
 import com.livescribe.icr.ICRContext;
 import com.livescribe.icr.Resource;
 import com.livescribe.afp.PageInstance;
+import com.livescribe.event.PenTipListener;
 
 /**
  * This Penlet displays "Hello World!" as text when activated by menu.
  */
-public class PhoneList extends Penlet implements StrokeListener, HWRListener, PenTipListener {
+public class CopyOfPhoneList extends Penlet implements StrokeListener, HWRListener, PenTipListener {
     
     private Display display;
     private ScrollLabel label;
-    //private MediaPlayer player;
+    private MediaPlayer player;
     private ICRContext icrContext;
-    private String name = "";
-    private String phone = "";
-    int doubleTap = 0;
-    public PhoneList() {   
+    int i = 0;
+    public CopyOfPhoneList() {   
     }
 
     /**
@@ -34,7 +32,7 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
         this.logger.info("Penlet PhoneList initialized.");
         this.display = this.context.getDisplay();
         this.label = new ScrollLabel();
-   //     this.player = MediaPlayer.newInstance(this);
+        this.player = MediaPlayer.newInstance(this);
     }
     
     /**
@@ -43,14 +41,14 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
     public void activateApp(int reason, Object[] args) {
         this.logger.info("Penlet PhoneList activated.");
         if (reason == Penlet.ACTIVATED_BY_MENU) {
-            //this.label.draw("Hello world!", true);
+            this.label.draw("Hello world!", true);
             this.display.setCurrent(this.label);
-            //this.player.play("/audio/helloworld.wav");
+            this.player.play("/audio/helloworld.wav");
         }
         this.context.addStrokeListener(this);
-        this.context.addPenTipListener(this);
+
         // Prompt the user for text entry
-        this.label.draw("Enter contact", true);
+        this.label.draw("Enter text", true);
         this.display.setCurrent(this.label);
         
         // Configure the ICR context
@@ -59,8 +57,7 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
             Resource[] resources = {
                 this.icrContext.getDefaultAlphabetKnowledgeResource(),
                 this.icrContext.createAppResource("/icr/LEX_PhoneList.res"),
-                this.icrContext.createSKSystemResource(ICRContext.SYSRES_SK_ALNUM),                                                                      
-                this.icrContext.createLKSystemResource(ICRContext.SYSRES_LK_OUT_OF_LEXICON)
+                this.icrContext.createSKSystemResource(ICRContext.SYSRES_SK_ALNUM)                                                                      
             };
             this.icrContext.addResourceSet(resources);            
         } catch (Exception e) {
@@ -70,6 +67,7 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
             this.display.setCurrent(this.label);
         }
 		context.addStrokeListener(this);
+		context.addPenTipListener(this);
     }
     
     /**
@@ -80,7 +78,8 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
         this.context.removeStrokeListener(this);
         icrContext.dispose();
         icrContext = null;
-		context.removeStrokeListener(this);            
+		context.removeStrokeListener(this);
+		context.removePenTipListener(this);            
     }
     
     /**
@@ -106,6 +105,7 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
      */
     public void hwrUserPause(long time, String result) {
         this.icrContext.clearStrokes();
+        this.label.draw("Paused "+result);
     }
     
     /**
@@ -114,25 +114,25 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
      */
     public void hwrResult(long time, String result) {
     	this.logger.info("hwrResult got: " + result);
-        this.display.setCurrent(this.label);
-    	if(result != null){
-           // Display HWR Engine output in real time
-            if(doubleTap==0){
-            	this.name =  result;
-            	this.label.draw("Name: "+this.name);
-            } else {
-            	this.phone = result;
-            	this.label.draw("Phone: "+this.phone);
+    	if(result == null || result.trim().length()<=0){
+    		this.label.draw("Zero size");
+    	} else {
+            
+
+            // Display HWR Engine output in real time
+            this.label.draw(result);
+            if (this.display.getCurrent() != this.label) {
+                this.display.setCurrent(this.label);
             }
     	}
-
+        i++;
     }
     
     /**
      * Called when an error occurs during handwriting recognition 
      */
     public void hwrError(long time, String error) {
-    	//this.label.draw("Not Recognized: " + error);
+    	this.label.draw("Not Recognized: " + error);
     	
     }
     
@@ -149,28 +149,19 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
         return true;
     }
 
-	public void doubleTap(long time, int x, int y) {
-		this.doubleTap++;
-		if(doubleTap==1){
-			this.label.draw("Phone:");
-		}
-		if(doubleTap>=2){
-			this.label.draw("Contact: "+this.name+ " " +this.phone, true);
-		}
+	public void penUp(long time, Region region, PageInstance page) {
+	
 	}
 
-	public void penDown(long time, Region region, PageInstance pageInstance) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void penUp(long time, Region region, PageInstance pageInstance) {
-		// TODO Auto-generated method stub
-		
+	public void penDown(long time, Region region, PageInstance page) {
+	
 	}
 
 	public void singleTap(long time, int x, int y) {
-		// TODO Auto-generated method stub
-		
+	
+	}
+
+	public void doubleTap(long time, int x, int y) {
+	
 	}                 
 }

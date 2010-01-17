@@ -15,98 +15,12 @@ import com.livescribe.afp.PageInstance;
 /**
  * This Penlet displays "Hello World!" as text when activated by menu.
  */
-public class PhoneList extends Penlet implements StrokeListener, HWRListener, PenTipListener {
+public class PhoneList extends BasicPenlet{
     
-    private Display display;
-    private ScrollLabel label;
-    //private MediaPlayer player;
-    private ICRContext icrContext;
-    private String name = "";
-    private String phone = "";
     int doubleTap = 0;
     public PhoneList() {   
     }
 
-    /**
-     * Invoked when the application is initialized.  This happens once for an application instance.
-     */
-    public void initApp() {
-        this.logger.info("Penlet PhoneList initialized.");
-        this.display = this.context.getDisplay();
-        this.label = new ScrollLabel();
-   //     this.player = MediaPlayer.newInstance(this);
-    }
-    
-    /**
-     * Invoked each time the penlet is activated.  Only one penlet is active at any given time.
-     */
-    public void activateApp(int reason, Object[] args) {
-        this.logger.info("Penlet PhoneList activated.");
-        if (reason == Penlet.ACTIVATED_BY_MENU) {
-            //this.label.draw("Hello world!", true);
-            this.display.setCurrent(this.label);
-            //this.player.play("/audio/helloworld.wav");
-        }
-        this.context.addStrokeListener(this);
-        this.context.addPenTipListener(this);
-        // Prompt the user for text entry
-        this.label.draw("Enter contact", true);
-        this.display.setCurrent(this.label);
-        
-        // Configure the ICR context
-        try {
-            this.icrContext = this.context.getICRContext(1000, this);
-            Resource[] resources = {
-                this.icrContext.getDefaultAlphabetKnowledgeResource(),
-                this.icrContext.createAppResource("/icr/LEX_PhoneList.res"),
-                this.icrContext.createSKSystemResource(ICRContext.SYSRES_SK_ALNUM),                                                                      
-                this.icrContext.createLKSystemResource(ICRContext.SYSRES_LK_OUT_OF_LEXICON)
-            };
-            this.icrContext.addResourceSet(resources);            
-        } catch (Exception e) {
-            String msg = "Error initializing handwriting recognition resources: " + e.getMessage();
-            this.logger.error(msg);
-            this.label.draw(msg, true);
-            this.display.setCurrent(this.label);
-        }
-		context.addStrokeListener(this);
-    }
-    
-    /**
-     * Invoked when the application is deactivated.
-     */
-    public void deactivateApp(int reason) {
-        this.logger.info("Penlet PhoneList deactivated.");
-        this.context.removeStrokeListener(this);
-        icrContext.dispose();
-        icrContext = null;
-		context.removeStrokeListener(this);            
-    }
-    
-    /**
-     * Invoked when the application is destroyed.  This happens once for an application instance.  
-     * No other methods will be invoked on the instance after destroyApp is called.
-     */
-    public void destroyApp() {
-        this.logger.info("Penlet PhoneList destroyed.");
-    }
-
-                 
-    /**
-     * Called when a new stroke is created on the pen. 
-     * The stroke information is added to the ICRContext
-     */
-    public void strokeCreated(long time, Region regionId, PageInstance page) {
-        this.icrContext.addStroke(page, time);
-    }
-    
-    /**
-     * When the user pauses (pause time specified by the wizard),
-     * all strokes in the ICRContext are cleared
-     */
-    public void hwrUserPause(long time, String result) {
-        this.icrContext.clearStrokes();
-    }
     
     /**
      * When the ICR engine detects an acceptable series or strokes,
@@ -121,56 +35,54 @@ public class PhoneList extends Penlet implements StrokeListener, HWRListener, Pe
             	this.name =  result;
             	this.label.draw("Name: "+this.name);
             } else {
-            	this.phone = result;
+            	this.phone = this.phone + getOnlyNumbers(result);
             	this.label.draw("Phone: "+this.phone);
             }
     	}
 
     }
     
-    /**
-     * Called when an error occurs during handwriting recognition 
-     */
-    public void hwrError(long time, String error) {
-    	//this.label.draw("Not Recognized: " + error);
-    	
+    public String getOnlyNumbers(String raw){
+    	String ret = "";
+    	int i=0;
+    	while(raw!=null && i<raw.length()){
+    		if((int)raw.charAt(i)>=(int)'0' && (int)raw.charAt(i)<=(int)'9'){
+    			ret=ret+raw.charAt(i);
+    		}
+    		i++;
+    	}
+    	return ret;
     }
     
-    /**
-     * Called when the user crosses out text
-     */
-    public void hwrCrossingOut(long time, String result) {}
-    
-    /**
-     * Specifies that the penlet should respond to events
-     * related to open paper
-     */
-    public boolean canProcessOpenPaperEvents () {
-        return true;
-    }
 
 	public void doubleTap(long time, int x, int y) {
 		this.doubleTap++;
 		if(doubleTap==1){
 			this.label.draw("Phone:");
-		}
-		if(doubleTap>=2){
+		} else if(doubleTap==2){
 			this.label.draw("Contact: "+this.name+ " " +this.phone, true);
+		}  else if(doubleTap>=3){
+			storeDataAndReset();
+			try{
+				this.doubleTap = 0;
+				resetApplication();
+			} catch(Exception e){
+	            String msg = "Error reseting app: " + e.getMessage();
+	            this.logger.error(msg);
+	            this.label.draw(msg, true);
+	            this.display.setCurrent(this.label);				
+			}
 		}
 	}
-
-	public void penDown(long time, Region region, PageInstance pageInstance) {
-		// TODO Auto-generated method stub
+	
+	private void storeDataAndReset(){
+		addToFile(this.name, this.phone);
+		this.name = "";
+		this.phone = "";		
+	}
+	
+	private void addToFile(String name, String phone){
 		
 	}
 
-	public void penUp(long time, Region region, PageInstance pageInstance) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void singleTap(long time, int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}                 
 }

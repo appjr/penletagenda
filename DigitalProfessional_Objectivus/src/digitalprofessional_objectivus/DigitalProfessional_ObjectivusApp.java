@@ -16,7 +16,7 @@ public class DigitalProfessional_ObjectivusApp extends SingleFrameApplication {
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
-        show(new DigitalProfessional_ObjectivusView(this));
+        show(new DigitalProfessional_ObjectivusView());
     }
 
     /**

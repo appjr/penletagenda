@@ -1,0 +1,5 @@
+name=PenletPhysics
+appclassname=com.objectivus.firstproject.PenletPhysics
+type=APP
+sound=/audio/SL_Ack.wav
+icon=

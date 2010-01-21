@@ -4,6 +4,7 @@ import com.livescribe.penlet.Penlet;
 import com.livescribe.display.Display;
 import com.livescribe.ui.MediaPlayer;
 import com.livescribe.ui.ScrollLabel;
+import com.livescribe.event.MenuEventListener;
 import com.livescribe.event.PenTipListener;
 import com.livescribe.event.StrokeListener;
 import com.livescribe.penlet.Region;
@@ -15,7 +16,7 @@ import com.livescribe.afp.PageInstance;
 /**
  * This Penlet displays "Hello World!" as text when activated by menu.
  */
-public abstract class BasicPenlet extends Penlet implements StrokeListener, HWRListener, PenTipListener {
+public abstract class BasicPenlet extends Penlet implements MenuEventListener,StrokeListener, HWRListener, PenTipListener {
 	   
     protected Display display;
     protected ScrollLabel label;

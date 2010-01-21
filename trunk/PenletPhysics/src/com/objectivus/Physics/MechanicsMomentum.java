@@ -12,9 +12,8 @@ public class MechanicsMomentum extends BaseFormula{
 		fieldsNames[1] = "v";
 	}
 
-	public double solve(double [] inputData) throws InvalidFieldException{
+	public double solve() throws InvalidFieldException{
 		double solution = 0;
-		setFields(inputData);
 		solution = fields[0]*fields[1];//change here
 		return solution;
 	}

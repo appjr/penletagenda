@@ -11,13 +11,8 @@ public abstract class BaseFormula {
 		}
 
 		
-		public void setFields(double fields[]) throws InvalidFieldException{
-			int i=0;
-			if(fields!=null){
-				while(i<fields.length){
-					this.fields[i] = fields[i];
-				}
-			}
+		public void setField(double field, int idx) throws InvalidFieldException{
+			this.fields[idx] = field;
 		}
-		abstract public double solve(double [] inputData) throws InvalidFieldException;
+		abstract public double solve() throws InvalidFieldException;
 }

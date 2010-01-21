@@ -9,6 +9,7 @@ public class PenletPhysics extends BasicPenlet{
     int doubleTap = 0;
     int menuLevel = 0;
     int currentFormula = 0;
+    int curFieldIndex = 0;
     BaseFormula bf [] = {new UniformMovement(), 
     					 new AcceleratedMovement(), 
     					 new AcceleratedMovementII(),
@@ -28,16 +29,24 @@ public class PenletPhysics extends BasicPenlet{
      * it prints the detected characters onto the Pulse display.
      */
     public void hwrResult(long time, String result) {
+    	String toShow = "";
     	this.logger.info("hwrResult got: " + result);
-        this.display.setCurrent(this.label);
-    	if(result != null){
-           // Display HWR Engine output in real time
-            if(doubleTap==0){
-            	this.name =  result;
-            	this.label.draw("Value: "+this.name);
-            } else {
-            }
+    	if(result.trim().length()==0){
+    		result = "0";
     	}
+    	if(curFieldIndex<bf[currentFormula].fields.length){
+	    	String fieldName = bf[currentFormula].fieldsNames[curFieldIndex];
+	    	bf[currentFormula].fields[curFieldIndex] = getOnlyNumbers(result);
+	    	toShow = fieldName+": "+bf[currentFormula].fields[curFieldIndex];
+    	} else {
+    		try{
+    			toShow = "Result: "+bf[currentFormula].solve();
+    		} catch(Exception e){
+    			this.logger.info(e.getMessage());
+    		}
+    	}
+    	this.display.setCurrent(this.label);
+        this.label.draw(toShow,true);
 
     }
     
@@ -48,8 +57,8 @@ public class PenletPhysics extends BasicPenlet{
         
     }
     
-    public String getOnlyNumbers(String raw){
-    	String ret = "";
+    public double getOnlyNumbers(String raw){
+    	String ret = "0";
     	int i=0;
     	while(raw!=null && i<raw.length()){
     		if((int)raw.charAt(i)>=(int)'0' && (int)raw.charAt(i)<=(int)'9'){
@@ -57,37 +66,41 @@ public class PenletPhysics extends BasicPenlet{
     		}
     		i++;
     	}
-    	return ret;
+    	return Double.parseDouble(raw);
     }
     
 
 	public void doubleTap(long time, int x, int y) {
-		this.doubleTap++;
-		if(doubleTap==1){
-			this.label.draw("Phone:");
-		} else if(doubleTap==2){
-			this.label.draw("Contact: "+this.name+ " " +this.phone, true);
-		}  else if(doubleTap>=3){
-			storeDataAndReset();
-			try{
-				this.doubleTap = 0;
-				resetApplication();
-			} catch(Exception e){
-	            String msg = "Error reseting app: " + e.getMessage();
-	            this.logger.error(msg);
-	            this.label.draw(msg, true);
-	            this.display.setCurrent(this.label);				
-			}
-		}
+		curFieldIndex++;
+		hwrResult(0, "");
 	}
 	
-	private void storeDataAndReset(){
-		addToFile(this.name, this.phone);
-		this.name = "";
-		this.phone = "";		
-	}
-	
-	private void addToFile(String name, String phone){
+	private void setInitialMsg(){
+        this.display.setCurrent(this.label);
+        this.label.draw(bf[currentFormula].fieldsNames[0],true);
 		
+	}
+	
+	public boolean handleMenuEvent(MenuEvent event) {
+		if(event.eventId == MenuEvent.MENU_RIGHT){
+			curFieldIndex = 0;
+			setInitialMsg();
+		} else if(event.eventId == MenuEvent.MENU_LEFT){
+	        //this.display.setCurrent(this.label);
+	        //this.label.draw(bf[currentFormula].getFormulaName(),true);
+		} else if(event.eventId == MenuEvent.MENU_DOWN){
+			if(currentFormula + 1 < maxFormulaIdx){
+				currentFormula++;
+			}
+	        this.display.setCurrent(this.label);
+	        this.label.draw(bf[currentFormula].getFormulaName(),true);
+		} else if(event.eventId == MenuEvent.MENU_UP){
+			if(currentFormula - 1 >= 0){
+				currentFormula--;
+			}
+	        this.display.setCurrent(this.label);
+	        this.label.draw(bf[currentFormula].getFormulaName(),true);
+		}
+		return false;
 	}
 }

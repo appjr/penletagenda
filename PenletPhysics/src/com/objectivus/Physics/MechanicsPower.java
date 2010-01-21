@@ -15,9 +15,8 @@ public class MechanicsPower extends BaseFormula{
 	}
 
 
-	public double solve(double [] inputData) throws InvalidFieldException{
+	public double solve() throws InvalidFieldException{
 		double solution = 0;
-		setFields(inputData);
 		solution = fields[0]*(fields[2]-fields[1]);//change here
 		return solution;
 	}

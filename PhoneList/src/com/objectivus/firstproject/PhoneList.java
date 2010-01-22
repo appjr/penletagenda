@@ -35,7 +35,16 @@ public class PhoneList extends BasicPenlet{
             	this.name =  result;
             	this.label.draw("Name: "+this.name);
             } else {
-            	this.phone = this.phone + getOnlyNumbers(result);
+            	if(result.equals("-")||result.equals(" ")){
+            		if(this.phone.length()-1>=0){
+            			this.phone = this.phone.substring(0, this.phone.length()-1);
+            		}
+            	} if(result.equals("x")||result.equals("X")){
+        			this.phone = "";
+            	} else {
+            		this.phone = this.phone + getOnlyNumbers(result);
+            	}
+            	this.icrContext.clearStrokes();
             	this.label.draw("Phone: "+this.phone);
             }
     	}

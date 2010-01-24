@@ -66,6 +66,9 @@ public class PenletPhysics extends BasicPenlet{
     		}
     		i++;
     	}
+    	if(raw.charAt(i)=='-'){
+    		raw = "-"+raw;
+    	}
     	return Double.parseDouble(raw);
     }
     

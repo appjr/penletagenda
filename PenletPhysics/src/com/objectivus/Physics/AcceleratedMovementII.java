@@ -10,7 +10,7 @@ public class AcceleratedMovementII extends BaseFormula{
 
 	public double solve() throws InvalidFieldException{
 		double solution = 0;
-		solution = fields[0]+(fields[1]*fields[2])+(0.5*fields[3]*fields[2]*fields[2]);
+		solution = fields[0]+(fields[1]*fields[2])+(0.5*fields[1]*fields[2]*fields[2]);
 		return solution;
 	}
 }

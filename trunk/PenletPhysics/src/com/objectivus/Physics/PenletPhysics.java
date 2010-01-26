@@ -1,7 +1,5 @@
 package com.objectivus.Physics;
 
-import com.livescribe.penlet.Penlet;
-import com.livescribe.event.MenuEventListener;
 import com.livescribe.event.MenuEvent;
 
 public class PenletPhysics extends BasicPenlet{
@@ -54,7 +52,7 @@ public class PenletPhysics extends BasicPenlet{
         super.activateApp(reason, args);
         this.display.setCurrent(this.label);
         this.label.draw(bf[currentFormula].getFormulaName(),true);
-        
+        this.player.play("/audio/helloworld.wav");
     }
     
     public double getOnlyNumbers(String raw){
@@ -66,10 +64,10 @@ public class PenletPhysics extends BasicPenlet{
     		}
     		i++;
     	}
-    	if(raw.charAt(i)=='-'){
-    		raw = "-"+raw;
+    	if(raw.length()>0 && raw.charAt(0)=='-'){
+    		ret = "-"+ret;
     	}
-    	return Double.parseDouble(raw);
+    	return Double.parseDouble(ret);
     }
     
 
@@ -103,6 +101,7 @@ public class PenletPhysics extends BasicPenlet{
 			}
 	        this.display.setCurrent(this.label);
 	        this.label.draw(bf[currentFormula].getFormulaName(),true);
+	       
 		}
 		return false;
 	}

@@ -63,17 +63,19 @@ public class PenletPhysics extends BasicPenlet{
     
     public void activateApp(int reason, Object[] args) {
         super.activateApp(reason, args);
-        this.display.setCurrent(this.label);
-        this.label.draw(bf[currentFormula].getFormulaName(),true);
-        this.player.play("/audio/physicsbyobjectivus.wav");
+        setCurrent();       
     }
     
     public double getOnlyNumbers(String raw){
     	String ret = "0";
     	int i=0;
+    	boolean decimalPoint = false;
     	while(raw!=null && i<raw.length()){
-    		if((int)raw.charAt(i)>=(int)'0' && (int)raw.charAt(i)<=(int)'9'){
+    		if(((int)raw.charAt(i)>=(int)'0' && (int)raw.charAt(i)<=(int)'9') || (raw.charAt(i)=='.' && decimalPoint==false)){
     			ret=ret+raw.charAt(i);
+    			if(raw.charAt(i)=='.'){
+    				decimalPoint=true;
+    			}
     		}
     		i++;
     	}
@@ -96,7 +98,9 @@ public class PenletPhysics extends BasicPenlet{
 	public boolean handleMenuEvent(MenuEvent event) {
 		if(event.eventId == MenuEvent.MENU_RIGHT){
 			curFieldIndex = 0;
-			setInitialMsg();
+			//setInitialMsg();
+			hwrResult(0, "");
+
 		} else if(event.eventId == MenuEvent.MENU_LEFT){
 	        //this.display.setCurrent(this.label);
 	        //this.label.draw(bf[currentFormula].getFormulaName(),true);

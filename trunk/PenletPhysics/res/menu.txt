@@ -1,5 +1,5 @@
-name=PenletPhysics
+name=Physics by Objectivus
 appclassname=com.objectivus.Physics.PenletPhysics
 type=APP
-sound=/audio/SL_Ack.wav
+sound=/audio/physicsbyobjectivus.wav
 icon=

@@ -42,7 +42,7 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
         this.logger.info("Penlet PhoneList activated.");
         if (reason == Penlet.ACTIVATED_BY_MENU) {
             this.display.setCurrent(this.label);
-            this.player.play("/audio/helloworld.wav");
+
         }
         this.context.addStrokeListener(this);
         this.context.addPenTipListener(this);

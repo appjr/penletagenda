@@ -19,6 +19,19 @@ public class PenletPhysics extends BasicPenlet{
     					 new MechanicsMomentum(),
     					 new MechanicsPower()
     					};
+    String formulaAudio [] ={"/audio/uniformmovement.wav",
+    						 "/audio/acceleratedmovement.wav",    		
+    						 "/audio/acceleratedmovementvelocity.wav",    		
+    						 "/audio/electromagneticpower.wav",    		
+    						 "/audio/electromagneticw.wav",    		
+    						 "/audio/kineticenergy.wav",    		
+    						 "/audio/potentialenergy.wav",    		
+    						 "/audio/force.wav",    		
+    						 "/audio/momentum.wav",    		
+    						 "/audio/mechanicalpower.wav"    		
+    						};
+    		
+    
     int maxFormulaIdx = bf.length-1;
     
     
@@ -52,7 +65,7 @@ public class PenletPhysics extends BasicPenlet{
         super.activateApp(reason, args);
         this.display.setCurrent(this.label);
         this.label.draw(bf[currentFormula].getFormulaName(),true);
-        //this.player.play("/audio/helloworld.wav");
+        this.player.play("/audio/physicsbyobjectivus.wav");
     }
     
     public double getOnlyNumbers(String raw){
@@ -77,9 +90,7 @@ public class PenletPhysics extends BasicPenlet{
 	}
 	
 	private void setInitialMsg(){
-        this.display.setCurrent(this.label);
-        this.label.draw(bf[currentFormula].fieldsNames[0],true);
-		
+		setCurrent();
 	}
 	
 	public boolean handleMenuEvent(MenuEvent event) {
@@ -93,16 +104,19 @@ public class PenletPhysics extends BasicPenlet{
 			if(currentFormula + 1 < maxFormulaIdx){
 				currentFormula++;
 			}
-	        this.display.setCurrent(this.label);
-	        this.label.draw(bf[currentFormula].getFormulaName(),true);
+			setCurrent();
 		} else if(event.eventId == MenuEvent.MENU_UP){
 			if(currentFormula - 1 >= 0){
 				currentFormula--;
 			}
-	        this.display.setCurrent(this.label);
-	        this.label.draw(bf[currentFormula].getFormulaName(),true);
-	       
+			setCurrent();
 		}
 		return false;
+	}
+	
+	private void setCurrent(){
+        this.display.setCurrent(this.label);
+        this.label.draw(bf[currentFormula].getFormulaName(),true);
+        this.player.play(formulaAudio[currentFormula]);
 	}
 }

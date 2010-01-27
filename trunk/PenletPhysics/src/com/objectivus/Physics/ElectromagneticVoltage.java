@@ -3,7 +3,7 @@ package com.objectivus.Physics;
 public class ElectromagneticVoltage extends BaseFormula{
 
 	public ElectromagneticVoltage(){
-		formulaName = "Uniform Movement: v = r.i"; //Change here
+		formulaName = "Electromagnetic Voltage: v = r.i"; //Change here
 		fields = new double[3];//Change here
 		fields[0] = 0;//Add here
 		fields[1] = 0;

@@ -52,7 +52,7 @@ public class PenletPhysics extends BasicPenlet{
         super.activateApp(reason, args);
         this.display.setCurrent(this.label);
         this.label.draw(bf[currentFormula].getFormulaName(),true);
-        this.player.play("/audio/helloworld.wav");
+        //this.player.play("/audio/helloworld.wav");
     }
     
     public double getOnlyNumbers(String raw){

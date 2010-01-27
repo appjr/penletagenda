@@ -32,6 +32,7 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
         this.logger.info("Penlet PhoneList initialized.");
         this.display = this.context.getDisplay();
         this.label = new ScrollLabel();
+        this.player = MediaPlayer.newInstance(this);
     }
     
     /**
@@ -41,7 +42,7 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
         this.logger.info("Penlet PhoneList activated.");
         if (reason == Penlet.ACTIVATED_BY_MENU) {
             this.display.setCurrent(this.label);
-            //this.player.play("/audio/welcome2.wav");
+            this.player.play("/audio/helloworld.wav");
         }
         this.context.addStrokeListener(this);
         this.context.addPenTipListener(this);

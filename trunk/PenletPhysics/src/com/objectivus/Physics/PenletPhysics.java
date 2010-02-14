@@ -32,7 +32,7 @@ public class PenletPhysics extends BasicPenlet{
     						};
     		
     
-    int maxFormulaIdx = bf.length-1;
+    int maxFormulaIdx = bf.length;
     
     
     /**

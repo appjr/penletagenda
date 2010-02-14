@@ -13,7 +13,7 @@ public class AcceleratedMovement  extends BaseFormula{
 		fieldsNames[0] = "s0";
 		fieldsNames[1] = "v0";
 		fieldsNames[2] = "t";
-		fieldsNames[2] = "a";
+		fieldsNames[3] = "a";
 	}
 
 	public double solve() throws InvalidFieldException{

@@ -29,7 +29,7 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
      * Invoked when the application is initialized.  This happens once for an application instance.
      */
     public void initApp() {
-        this.logger.info("Penlet PhoneList initialized.");
+        this.logger.info("Penlet Physics initialized.");
         this.display = this.context.getDisplay();
         this.label = new ScrollLabel();
         this.player = MediaPlayer.newInstance(this);
@@ -39,14 +39,14 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
      * Invoked each time the penlet is activated.  Only one penlet is active at any given time.
      */
     public void activateApp(int reason, Object[] args) {
-        this.logger.info("Penlet PhoneList activated.");
+        this.logger.info("Penlet Physics activated.");
         if (reason == Penlet.ACTIVATED_BY_MENU) {
             this.display.setCurrent(this.label);
 
         }
         this.context.addStrokeListener(this);
         this.context.addPenTipListener(this);
-        configureContextForNames();
+        configureContext();
         resetApplication();
     }
 
@@ -56,6 +56,25 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
         this.display.setCurrent(this.label);
     }
     
+    private void configureContext(){
+        // Configure the ICR context
+        try {
+            this.icrContext = this.context.getICRContext(1000, this);
+            Resource[] resources = {
+                this.icrContext.getDefaultAlphabetKnowledgeResource(),
+                this.icrContext.createAppResource("/icr/SK_Physics.res")                                                                      
+            };
+            this.icrContext.addResourceSet(resources);            
+        } catch (Exception e) {
+            String msg = "Error initializing handwriting recognition resources: " + e.getMessage();
+            this.logger.error(msg);
+            this.label.draw(msg, true);
+            this.display.setCurrent(this.label);
+        }
+		context.addStrokeListener(this);
+    }
+    
+    /*
     private void configureContextForNames(){
     	// Configure the ICR context
         try {
@@ -75,6 +94,7 @@ public abstract class BasicPenlet extends Penlet implements MenuEventListener,St
         }
 		context.addStrokeListener(this);
     }
+    */
     /*
     protected void configureContextForNumbers(){
     	// Configure the ICR context
